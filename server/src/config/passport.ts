@@ -27,7 +27,7 @@ passport.use(
 			const user = await User.findOne({ id: jwtPayload.sub });
 			// If the user does not exist, return an error
 			if (!user) return done(null, false, { message: 'Invalid email or password' });
-			// if user is blocked, send back that error message
+
 			return done(null, user);
 		}
 	)

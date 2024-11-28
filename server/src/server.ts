@@ -1,10 +1,9 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import { createServer } from 'http';
+import { connect } from 'mongoose';
 import { Server } from 'socket.io';
 import { passportConfig } from './config/passport';
-import { connect } from 'mongoose';
-import { User } from './models/User';
-import { signToken } from './util/jwt';
+import { router } from './router';
 
 const app = express();
 
@@ -17,26 +16,9 @@ const io = new Server(httpServer, {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.post('/login', async (req: Request, res: Response) => {
-	const user = await User.findOne({ email: req.body.email });
-	if (!user) {
-		return res.status(401).send('Invalid email or password');
-	}
-
-	const valid = await user.verifyPassword(req.body.password);
-	if (!valid) {
-		return res.status(401).send('Invalid email or password');
-	}
-
-	return res.send(signToken({ email: user.email }));
-});
-
 app.use(passportConfig.initialize());
 
-app.post('/verify', passportConfig.authenticate('jwt', { session: false }), (req, res) => {
-	res.send('Logged in');
-});
+app.use(router);
 
 const ids = new Set<string>();
 
