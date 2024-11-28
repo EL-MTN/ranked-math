@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import { createServer } from 'http';
 import { connect } from 'mongoose';
@@ -7,6 +8,8 @@ import { router } from './router';
 
 const app = express();
 const httpServer = createServer(app);
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,11 +35,21 @@ io.engine.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 io.on('connection', (socket) => {
+	console.log('Connected');
 	socket.emit('user_info', (socket.request as any).user!);
+	socket.emit('pong');
 
 	socket.on('data', (data) => {
 		console.log(data);
 		ids.add(socket.id);
+	});
+	socket.on('ping', () => {
+		console.log('Ping');
+		socket.emit('pong');
+	});
+
+	socket.on('disconnect', () => {
+		console.log('Disconnected');
 	});
 });
 
