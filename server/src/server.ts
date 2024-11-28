@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { createServer } from 'http';
 import { connect } from 'mongoose';
 import { Server } from 'socket.io';
@@ -6,13 +6,7 @@ import { passportConfig } from './config/passport';
 import { router } from './router';
 
 const app = express();
-
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
-	cors: {
-		origin: '*',
-	},
-});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,8 +16,23 @@ app.use(router);
 
 const ids = new Set<string>();
 
+const io = new Server(httpServer, {
+	cors: {
+		origin: '*',
+	},
+});
+
+io.engine.use((req: Request, res: Response, next: NextFunction) => {
+	const isHandshake = (req as any)._query.sid === undefined;
+	if (isHandshake) {
+		passportConfig.authenticate('jwt', { session: false })(req, res, next);
+	} else {
+		next();
+	}
+});
+
 io.on('connection', (socket) => {
-	console.log('Connection from user');
+	socket.emit('user_info', (socket.request as any).user!);
 
 	socket.on('data', (data) => {
 		console.log(data);
