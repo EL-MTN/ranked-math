@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router';
-import { login } from '../api/auth';
+import { signup } from '../api/auth';
 
-export default function Login() {
+export default function Signup() {
 	const navigate = useNavigate();
 
 	function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -10,7 +10,8 @@ export default function Login() {
 		const email = form.elements.namedItem('email') as HTMLInputElement;
 		const password = form.elements.namedItem('password') as HTMLInputElement;
 
-		login(email.value, password.value).then((data) => {
+		signup(email.value, password.value).then((data) => {
+			console.log(data);
 			if (data.error) {
 				alert(data.error);
 			} else {
@@ -22,8 +23,12 @@ export default function Login() {
 
 	return (
 		<div>
-			<Link to="/signup">Signup</Link>
-			<form onSubmit={handleSubmit}>
+			<Link to="/login">Login</Link>
+			<form
+				onSubmit={(e) => {
+					handleSubmit(e);
+				}}
+			>
 				<label>
 					Email:
 					<input type="email" name="email" />
@@ -34,7 +39,7 @@ export default function Login() {
 					<input type="password" name="password" />
 				</label>
 				<br />
-				<button type="submit">Login</button>
+				<button type="submit">Signup</button>
 			</form>
 		</div>
 	);

@@ -6,7 +6,7 @@ export const authRouter = Router();
 
 // Unprotected Routes
 authRouter.post('/login', authController.userLogin);
-authRouter.post('/register', authController.userRegister);
+authRouter.post('/signup', authController.userRegister);
 
 // Protected Routes
 authRouter.use(passportConfig.authenticate('jwt', { session: false }));

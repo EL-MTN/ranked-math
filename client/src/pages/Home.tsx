@@ -3,14 +3,14 @@ import { ConnectionState } from '../components/ConnectionState';
 import { io } from 'socket.io-client';
 import { useNavigate } from 'react-router';
 
-const socket = io('http://localhost:1025', {
-	extraHeaders: {
-		authorization: `Bearer ${localStorage.getItem('token')}`,
-	},
-	autoConnect: false,
-});
-
 export default function App() {
+	const socket = io('http://localhost:1025', {
+		extraHeaders: {
+			authorization: `Bearer ${localStorage.getItem('token')}`,
+		},
+		autoConnect: false,
+	});
+
 	const navigate = useNavigate();
 	const [data, setData] = useState<{ email: string }>();
 	const [isConnected, setIsConnected] = useState(socket.connected);
