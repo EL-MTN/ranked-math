@@ -22,13 +22,12 @@ passport.use(
 		},
 		// This function is called when a request is made to the server
 		async (jwtPayload: JwtPayload, done) => {
-			console.log(jwtPayload);
 			// Check if the user exists
 			const user = await User.findOne({ id: jwtPayload.sub });
 			// If the user does not exist, return an error
 			if (!user) return done(null, false, { message: 'Invalid email or password' });
 
-			return done(null, user);
+			return done(null, user._id);
 		}
 	)
 );

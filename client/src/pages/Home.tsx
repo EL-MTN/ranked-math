@@ -12,7 +12,7 @@ export default function App() {
 	});
 
 	const navigate = useNavigate();
-	const [data, setData] = useState<{ email: string }>();
+	const [data, setData] = useState<string>();
 	const [isConnected, setIsConnected] = useState(socket.connected);
 
 	useEffect(() => {
@@ -30,7 +30,7 @@ export default function App() {
 		function onDisconnect() {
 			setIsConnected(false);
 		}
-		function onUserInfo(data: { email: string }) {
+		function onUserInfo(data: string) {
 			setData(data);
 		}
 		function onPong() {
@@ -52,7 +52,7 @@ export default function App() {
 
 	return (
 		<div>
-			<p>{data ? data.email : 'None'}</p>
+			<p>{data}</p>
 			<ConnectionState isConnected={isConnected} />
 			<button
 				onClick={() => {

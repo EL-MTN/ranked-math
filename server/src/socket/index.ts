@@ -4,7 +4,7 @@ import { registerLobbyHandlers } from './lobbyHandler';
 export const onConnection = (socket: Socket) => {
 	registerLobbyHandlers(socket);
 
-	console.log('New connection');
+	socket.emit('user_info', socket.data.user);
 
 	socket.emit('message', `Hello from server ${new Date().toISOString()}`);
 };

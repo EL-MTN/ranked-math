@@ -1,13 +1,11 @@
 import cors from 'cors';
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import { createServer } from 'http';
 import { connect } from 'mongoose';
 import { Server } from 'socket.io';
 import { passportConfig } from './config/passport';
-import { router } from './router';
-import { registerLobbyHandlers } from './socket/lobbyHandler';
-import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './types';
 import { socketAuth } from './middlewares/socketAuth';
+import { router } from './router';
 import { onConnection } from './socket';
 
 const app = express();

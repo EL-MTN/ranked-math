@@ -11,7 +11,6 @@ export default function Signup() {
 		const password = form.elements.namedItem('password') as HTMLInputElement;
 
 		signup(email.value, password.value).then((data) => {
-			console.log(data);
 			if (data.error) {
 				alert(data.error);
 			} else {

@@ -13,7 +13,7 @@ export const userLogin = async (req: Request, res: Response) => {
 		return res.status(401).json({ error: 'Invalid email or password' });
 	}
 
-	const token = signToken({ email: user.email });
+	const token = signToken({ id: user._id });
 
 	return res.json({ token });
 };
@@ -22,7 +22,7 @@ export const userRegister = async (req: Request, res: Response) => {
 	const user = new User(req.body);
 	await user.save();
 
-	const token = signToken({ email: user.email });
+	const token = signToken({ id: user._id });
 
 	return res.json({ token });
 };

@@ -5,13 +5,7 @@ import { User } from '../models/User';
 const queue: Socket[] = [];
 const games = new Map<string, { socket: Socket; choice: '' | 'cooperate' | 'defect' }[]>();
 
-const connectedIds = new Set<string>();
-
 export function registerLobbyHandlers(socket: Socket) {
-	const onConnect = () => {
-		connectedIds.add(socket.request.user);
-	};
-
 	const onQueue = async () => {
 		if (queue.indexOf(socket) !== -1) return;
 
@@ -53,15 +47,12 @@ export function registerLobbyHandlers(socket: Socket) {
 	};
 
 	const onDisconnect = () => {
-		connectedIds.delete(socket.request.user);
-
 		const index = queue.indexOf(socket);
 		if (index !== -1) {
 			queue.splice(index, 1);
 		}
 	};
 
-	socket.on('connect', onConnect);
 	socket.on('queue', onQueue);
 	socket.on('cancelQueue', cancelQueue);
 	socket.on('disconnecting', onDisconnecting);
