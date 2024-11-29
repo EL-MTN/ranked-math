@@ -5,6 +5,10 @@ import { connect } from 'mongoose';
 import { Server } from 'socket.io';
 import { passportConfig } from './config/passport';
 import { router } from './router';
+import { registerLobbyHandlers } from './socket/lobbyHandler';
+import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './types';
+import { socketAuth } from './middlewares/socketAuth';
+import { onConnection } from './socket';
 
 const app = express();
 const httpServer = createServer(app);
@@ -25,33 +29,8 @@ const io = new Server(httpServer, {
 	},
 });
 
-io.engine.use((req: Request, res: Response, next: NextFunction) => {
-	const isHandshake = (req as any)._query.sid === undefined;
-	if (isHandshake) {
-		passportConfig.authenticate('jwt', { session: false })(req, res, next);
-	} else {
-		next();
-	}
-});
-
-io.on('connection', (socket) => {
-	console.log('Connected');
-	socket.emit('user_info', (socket.request as any).user!);
-	socket.emit('pong');
-
-	socket.on('data', (data) => {
-		console.log(data);
-		ids.add(socket.id);
-	});
-	socket.on('ping', () => {
-		console.log('Ping');
-		socket.emit('pong');
-	});
-
-	socket.on('disconnect', () => {
-		console.log('Disconnected');
-	});
-});
+io.use(socketAuth);
+io.on('connection', onConnection);
 
 httpServer.listen(1025);
 connect('mongodb://localhost:27017/rankedMath').then(() => {

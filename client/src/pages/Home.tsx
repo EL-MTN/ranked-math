@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router';
 
 export default function App() {
 	const socket = io('http://localhost:1025', {
-		extraHeaders: {
-			authorization: `Bearer ${localStorage.getItem('token')}`,
+		auth: {
+			token: localStorage.getItem('token'),
 		},
 		autoConnect: false,
 	});

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { User } from '../models/User';
-import { signToken } from '../util/jwt';
+import { signToken } from '../lib/jwt';
 
 export const userLogin = async (req: Request, res: Response) => {
 	const user = await User.findOne({ email: req.body.email });
